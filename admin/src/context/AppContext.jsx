@@ -7,7 +7,7 @@ const AppContextProvider = (props) => {
     const backendUrl =
     import.meta.env.VITE_BACKEND_URL ||
     "https://prescripto-backend-nkkd.onrender.com";
-    const currency = import.meta.env.VITE_CURRENCY || "USD"; // fallback if env missing
+    const currency = import.meta.env.VITE_CURRENCY;
 
     const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
