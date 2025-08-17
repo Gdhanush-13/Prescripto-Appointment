@@ -7,8 +7,10 @@ export const AppContext = createContext();
 const AppContextProvider = (props) => {
   const currencySymbol = "$";
 
-  // Use environment variable with fallback
-  const backendUrl = import.meta.env.VITE_BACKEND_URL
+  // ✅ Always fallback to your Render backend if env var is not set
+  const backendUrl =
+    import.meta.env.VITE_BACKEND_URL ||
+    "https://prescripto-backend-nkkd.onrender.com";
 
   const [doctors, setDoctors] = useState([]);
   const [loadingDoctors, setLoadingDoctors] = useState(false);
@@ -25,7 +27,9 @@ const AppContextProvider = (props) => {
     setLoadingDoctors(true);
     setDoctorsError("");
     try {
-      const { data } = await axios.get(`${backendUrl}/api/doctor/list`);
+      const { data } = await axios.get(`${backendUrl}/api/doctor/list`, {
+        withCredentials: true, // ✅ important for cookies/auth if used
+      });
       if (data.success) setDoctors(data.doctors);
       else setDoctorsError(data.message);
     } catch (error) {
@@ -42,6 +46,7 @@ const AppContextProvider = (props) => {
     try {
       const { data } = await axios.get(`${backendUrl}/api/user/get-profile`, {
         headers: { token: activeToken },
+        withCredentials: true,
       });
 
       if (data.success) setUserData(data.userData);
