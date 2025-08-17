@@ -6,7 +6,7 @@ export const AdminContext = createContext();
 
 const AdminContextProvider = (props) => {
   // Use Vite env var or fallback to deployed backend
-  const backendUrl = import.meta.env.VITE_BACKEND_URL || "https://prescripto-appointment.onrender.com";
+  const backendUrl = import.meta.env.VITE_BACKEND_URL || "https://prescripto-backend-nkkd.onrender.com";
 
   const [aToken, setAToken] = useState(
     localStorage.getItem("aToken") ? localStorage.getItem("aToken") : ""
