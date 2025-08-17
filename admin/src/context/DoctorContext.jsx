@@ -5,46 +5,48 @@ import { toast } from "react-toastify";
 export const DoctorContext = createContext();
 
 const DoctorContextProvider = (props) => {
-  // Use env variable or fallback
-  const backendUrl =
-    import.meta.env.VITE_BACKEND_URL ||
-    "https://prescripto-backend-nkkd.onrender.com";
+  // Backend URL
+  const backendUrl = import.meta.env.VITE_BACKEND_URL || "https://prescripto-appointment.onrender.com";
 
-  const [dToken, setDToken] = useState(localStorage.getItem("dToken") || "");
+  const [dToken, setDToken] = useState(
+    localStorage.getItem("dToken") ? localStorage.getItem("dToken") : ""
+  );
   const [appointments, setAppointments] = useState([]);
   const [dashData, setDashData] = useState(false);
   const [profileData, setProfileData] = useState(false);
 
-  // Get appointments
+  // ✅ Getting Doctor appointment data
   const getAppointments = async () => {
     try {
-      const { data } = await axios.get(
-        `${backendUrl}/api/doctor/appointments`,
-        { headers: { dToken } }
-      );
-      if (data.success) setAppointments(data.appointments.reverse());
-      else toast.error(data.message);
+      const { data } = await axios.get(`${backendUrl}/api/doctor/appointments`, {
+        headers: { dToken },
+      });
+
+      if (data.success) {
+        setAppointments(data.appointments.reverse());
+      } else {
+        toast.error(data.message);
+      }
     } catch (error) {
-      toast.error("Failed to fetch appointments");
       console.error(error);
+      toast.error(error.message);
     }
   };
 
-  // Get profile
+  // ✅ Getting Doctor profile data
   const getProfileData = async () => {
     try {
-      const { data } = await axios.get(
-        `${backendUrl}/api/doctor/profile`,
-        { headers: { dToken } }
-      );
+      const { data } = await axios.get(`${backendUrl}/api/doctor/profile`, {
+        headers: { dToken },
+      });
       setProfileData(data.profileData);
     } catch (error) {
-      toast.error("Failed to load profile");
       console.error(error);
+      toast.error(error.message);
     }
   };
 
-  // Cancel appointment
+  // ✅ Cancel doctor appointment
   const cancelAppointment = async (appointmentId) => {
     try {
       const { data } = await axios.post(
@@ -52,18 +54,21 @@ const DoctorContextProvider = (props) => {
         { appointmentId },
         { headers: { dToken } }
       );
+
       if (data.success) {
         toast.success(data.message);
         getAppointments();
         getDashData();
-      } else toast.error(data.message);
+      } else {
+        toast.error(data.message);
+      }
     } catch (error) {
-      toast.error("Error cancelling appointment");
       console.error(error);
+      toast.error(error.message);
     }
   };
 
-  // Complete appointment
+  // ✅ Mark appointment as completed
   const completeAppointment = async (appointmentId) => {
     try {
       const { data } = await axios.post(
@@ -71,35 +76,42 @@ const DoctorContextProvider = (props) => {
         { appointmentId },
         { headers: { dToken } }
       );
+
       if (data.success) {
         toast.success(data.message);
         getAppointments();
         getDashData();
-      } else toast.error(data.message);
+      } else {
+        toast.error(data.message);
+      }
     } catch (error) {
-      toast.error("Error completing appointment");
       console.error(error);
+      toast.error(error.message);
     }
   };
 
-  // Dashboard data
+  // ✅ Getting Doctor dashboard data
   const getDashData = async () => {
     try {
       const { data } = await axios.get(`${backendUrl}/api/doctor/dashboard`, {
         headers: { dToken },
       });
-      if (data.success) setDashData(data.dashData);
-      else toast.error(data.message);
+
+      if (data.success) {
+        setDashData(data.dashData);
+      } else {
+        toast.error(data.message);
+      }
     } catch (error) {
-      toast.error("Failed to fetch dashboard");
       console.error(error);
+      toast.error(error.message);
     }
   };
 
   const value = {
-    backendUrl,
     dToken,
     setDToken,
+    backendUrl,
     appointments,
     getAppointments,
     cancelAppointment,
